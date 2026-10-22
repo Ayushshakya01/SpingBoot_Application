@@ -20,6 +20,8 @@ On Windows, use `mvnw.cmd` instead of `./mvnw`. JaCoCo writes its report to `tar
 
 The API listens on port 8080. H2 uses an in-memory database, so data is reset when the application stops. The H2 console is available at `http://localhost:8080/h2-console`.
 
+The root path (`/`) returns links to the task API and health endpoint.
+
 ## Endpoints
 
 | Method | Endpoint | Description |

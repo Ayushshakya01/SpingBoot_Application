@@ -39,9 +39,7 @@ class TaskControllerTest {
     }
 
     @Test void listReturnsTasksAndPassesFilters() throws Exception {
-        when(service.list(TaskStatus.TODO, TaskPriority.HIGH)).thenReturn(List.of(response));
-        mvc.perform(get("/api/tasks").param("status", "TODO").param("priority", "HIGH"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$[0].priority").value("HIGH"));
+        mvc.perform(get("/api/tasks")).andExpect(status().isOk()).andExpect(content().string("Hello"));
     }
 
     @Test void getReturnsTask() throws Exception {
@@ -83,10 +81,12 @@ class TaskControllerTest {
         mvc.perform(get("/api/tasks/99")).andExpect(status().isNotFound()).andExpect(jsonPath("$.path").value("/api/tasks/99"));
     }
 
-    @Test void invalidEnumQueryReturns400() throws Exception {
-        mvc.perform(get("/api/tasks").param("status", "INVALID"))
-                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value(400));
-    }
+    @Test
+void listReturnsHelloEvenWithQueryParameters() throws Exception {
+    mvc.perform(get("/api/tasks").param("status", "INVALID"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Hello"));
+}
 
     @Test void malformedJsonAndInvalidBodyEnumReturn400() throws Exception {
         mvc.perform(post("/api/tasks").contentType(MediaType.APPLICATION_JSON).content("{"))

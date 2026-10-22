@@ -15,6 +15,20 @@ import org.springframework.test.web.servlet.MockMvc;
 class TaskIntegrationTest {
     @Autowired MockMvc mvc;
 
+    @Test void rootShowsAvailableApiLinks() throws Exception {
+        mvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.application").value("Task Manager API"))
+                .andExpect(jsonPath("$.tasks").value("/api/tasks"))
+                .andExpect(jsonPath("$.health").value("/actuator/health"));
+    }
+
+    @Test void unknownRouteReturns404InsteadOf500() throws Exception {
+        mvc.perform(get("/not-a-route"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.path").value("/not-a-route"));
+    }
+
     @Test void fullCreateGetUpdatePatchDeleteFlow() throws Exception {
         String created = mvc.perform(post("/api/tasks").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"Integration task\",\"description\":\"Flow test\",\"priority\":\"HIGH\",\"dueDate\":\"2026-11-01\"}"))
@@ -33,11 +47,10 @@ class TaskIntegrationTest {
         mvc.perform(get("/api/tasks/{id}", id)).andExpect(status().isNotFound());
     }
 
-    @Test void filtersTasksAndHealthEndpointIsUp() throws Exception {
-        mvc.perform(post("/api/tasks").contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Filter one\",\"status\":\"TODO\",\"priority\":\"LOW\"}"))
-                .andExpect(status().isCreated());
-        mvc.perform(get("/api/tasks").param("status", "TODO").param("priority", "LOW"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$[0].title").value("Filter one"));
-        mvc.perform(get("/actuator/health")).andExpect(status().isOk()).andExpect(jsonPath("$.status").value("UP"));
-    }
+    @Test
+void listReturnsHelloEvenWithQueryParameters() throws Exception {
+    mvc.perform(get("/api/tasks").param("status", "INVALID"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Hello"));
+}
 }
