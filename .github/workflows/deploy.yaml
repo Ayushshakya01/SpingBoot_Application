@@ -18,5 +18,14 @@ jobs:
           script: |
             cd /home/ubuntu/SpingBoot_Application
             git pull origin dev
+
             docker build -t springboot-app:latest .
-            docker run -d -p 8080:8080 springboot-app:latest
+
+            docker stop springboot-app || true
+            docker rm springboot-app || true
+
+            docker run -d \
+              --name springboot-app \
+              --restart unless-stopped \
+              -p 8080:8080 \
+              springboot-app:latest
