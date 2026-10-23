@@ -39,7 +39,7 @@ class TaskControllerTest {
     }
 
     @Test void listReturnsTasksAndPassesFilters() throws Exception {
-        mvc.perform(get("/api/tasks")).andExpect(status().isOk()).andExpect(content().string("Hello"));
+        mvc.perform(get("/api/tasks")).andExpect(status().isOk()).andExpect(content().string("Hello World"));
     }
 
     @Test void getReturnsTask() throws Exception {
