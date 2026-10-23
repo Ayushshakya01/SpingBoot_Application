@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.HOST_IP_ADDRESS}}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
