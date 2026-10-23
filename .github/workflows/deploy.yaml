@@ -13,9 +13,9 @@ jobs:
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.HOST_IP_ADDRESS}}
-          username: root
+          username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script:
+          script: |
             cd /home/ubuntu/SpingBoot_Application
             git pull origin dev
             docker build -t springboot-app:latest .
